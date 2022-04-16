@@ -1,7 +1,11 @@
 <template>
   <div class="entry-list-container">
     <div class="px-2 pt-2">
-      <input type="text" class="form-control" placeholder="buscar entradas" />
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Rechercher un article"
+      />
     </div>
     <div class="entry-scrollarea">
       <Entry v-for="item in 100" :key="item" />

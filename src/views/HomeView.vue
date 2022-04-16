@@ -14,7 +14,7 @@
 export default {
   methods: {
     goToDayBook() {
-      this.$router.push({ name: "daybook" }); // el name viene del router /modules/daybook/router/index.js
+      this.$router.push({ name: "no-entry" }); // el name viene del router /modules/daybook/router/index.js
     },
   },
 };
