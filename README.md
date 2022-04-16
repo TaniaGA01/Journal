@@ -24,3 +24,4 @@ yarn lint
 See [Configuration Reference](https://cli.vuejs.org/config/).
 # journal
 # journal-vuex
+# journal-vuex
