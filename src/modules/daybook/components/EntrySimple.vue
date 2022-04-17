@@ -1,25 +1,72 @@
 <template>
   <div
     class="mb-3 pointer p-2 entry-container"
-    @click="$router.push({ name: 'entry', params: { id: 10 } })"
+    @click="$router.push({ name: 'entry', params: { id: entry.id } })"
   >
     <div class="entry-title d-flex">
-      <span class="text-success fs-5 fw-bold">15</span>
-      <span class="mx-1 fs-5">juillet</span>
-      <span class="mx-2 fw-light">2022</span>
+      <span class="text-success fs-5 fw-bold">{{ day }}</span>
+      <span class="mx-1 fs-5">{{ month }}</span>
+      <span class="mx-2 fw-light">{{ yearDay }}</span>
     </div>
 
     <div class="entry-description">
-      Exercitation sit ipsum ullamco voluptate qui ut do sit nulla ex elit
-      laborum dolor. Nostrud cupidatat ullamco quis ea consectetur velit ipsum
-      dolore excepteur velit excepteur. Reprehenderit sint eu esse do est aute
-      reprehenderit proident. Irure proident nulla Lorem cupidatat fugiat sint
-      consequat. Officia sint et Lorem sunt officia dolor dolore officia est in
-      aliquip laboris est.
+      {{ shortText }}
     </div>
   </div>
 </template>
+
 <script>
+const months = [
+  "Janvier",
+  "Février",
+  "Mars",
+  "Avril",
+  "Mai",
+  "Juin",
+  "Juillet",
+  "Août",
+  "Septembre",
+  "Octobre",
+  "Novembre",
+  "Décembre",
+];
+const days = [
+  "Dimanche",
+  "Lundi",
+  "Mardi",
+  "Mercredi",
+  "Jeudi",
+  "Vendredi",
+  "Samedi",
+];
+
+export default {
+  props: {
+    entry: {
+      type: Object,
+      required: true,
+    },
+  },
+  computed: {
+    shortText() {
+      return this.entry.text.length > 180
+        ? this.entry.text.substring(0, 180) + "..."
+        : this.entry.text;
+    },
+    day() {
+      const date = new Date(this.entry.date);
+      return date.getDate();
+    },
+    month() {
+      const date = new Date(this.entry.date);
+      return months[date.getMonth()];
+    },
+    yearDay() {
+      const date = new Date(this.entry.date);
+      return `${date.getFullYear()}, ${days[date.getDay()]}`;
+    },
+  },
+};
 </script>
 
 

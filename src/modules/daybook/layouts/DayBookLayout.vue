@@ -1,24 +1,24 @@
 <template>
   <Navbar />
-  <div class="d-flex">
-    <div class="col-4">
+  <div class='d-flex'>
+    <div class='col-4'>
       <EntryList />
     </div>
-    <div class="col">
+    <div class='col'>
       <router-view />
     </div>
   </div>
 </template>
 <script>
-import { defineAsyncComponent } from "vue";
+import { defineAsyncComponent } from 'vue';
 
 export default {
   components: {
     Navbar: defineAsyncComponent(() =>
-      import("../components/Navbar-primary.vue")
+      import('../components/Navbar-primary.vue')
     ),
     EntryList: defineAsyncComponent(() =>
-      import("../components/EntryList.vue")
+      import('../components/EntryList.vue')
     ),
   },
 };
