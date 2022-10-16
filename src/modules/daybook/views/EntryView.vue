@@ -7,7 +7,11 @@
         <span class="mx-2 fs-4 fw-light">{{ dayMonthYear.yearDay }}</span>
       </div>
       <div>
-        <button class="btn btn-danger mx-2">
+        <button
+          v-if="entry.id"
+          class="btn btn-danger mx-2"
+          @click="onDeleteEntry"
+        >
           Supprimer
           <i class="fa fa-trash-alt"></i>
         </button>
@@ -30,12 +34,15 @@
       class="img-thumbnail"
     />
   </template>
-  <FabComp icon="fa-save" /><!-- icon vient du props du composant FabCom-->
+  <FabComp
+    icon="fa-save"
+    @on:click="saveEntry"
+  /><!-- icon vient du props du composant FabCom-->
 </template>
 
 <script>
 import { defineAsyncComponent } from "vue";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import getDayMonthYear from "../helpers/getDayMonthYear";
 
 export default {
@@ -45,35 +52,75 @@ export default {
       required: true,
     },
   },
+
   components: {
     FabComp: defineAsyncComponent(() => import("../components/FabComp.vue")),
   },
+
   data() {
     return {
       entry: null,
     };
   },
+
   computed: {
     ...mapGetters("journalModule", ["getEntriesById"]),
+
     dayMonthYear() {
       const { day, month, yearDay } = getDayMonthYear(this.entry.date);
       return { day, month, yearDay };
     },
   },
-  methods: {
-    loadEntry() {
-      const entryById = this.getEntriesById(this.id);
-      console.log(`entryById`, entryById);
 
-      if (!entryById) return this.$router.push({ name: "no-entry" });
-      this.entry = entryById;
+  methods: {
+    ...mapActions("journalModule", [
+      "updateEntry",
+      "createEntry",
+      "deleteEntry",
+    ]), //appel à l'action updateEntry du actions.js'
+
+    loadEntry() {
+      let entry;
+
+      if (this.id === "new") {
+        // 'new' vient de la fonction goCreateNewEntry de NoEntrySelected.vue
+        entry = {
+          text: "",
+          date: new Date().getTime(),
+        };
+      } else {
+        entry = this.getEntriesById(this.id);
+        if (!entry) return this.$router.push({ name: "no-entry" });
+      }
+
+      this.entry = entry;
+    },
+
+    async saveEntry() {
+      //Actualiser l'article
+      if (this.entry.id) {
+        await this.updateEntry(this.entry); // appel updateEntry pour actualiser
+      } else {
+        // Ajouter nouvel article
+        const id = await this.createEntry(this.entry);
+        //redirection
+        return this.$router.push({ name: "entry", params: { id } });
+      }
+    },
+
+    async onDeleteEntry() {
+      console.log("delete", this.entry);
+      await this.deleteEntry(this.entry.id);
+      return this.$router.push({ name: "no-entry" });
     },
   },
+
   created() {
     //console.log(`router`, this.$route); //ici on affiche l'id de la route dans la console
     console.log(`id`, this.id); // fonctionne  uniquement à partir de la conf du props dans le router
     this.loadEntry();
   },
+
   watch: {
     id() {
       // l'id vient des props donc il affiche l'ancien value et le nouveau
