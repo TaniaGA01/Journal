@@ -2,7 +2,6 @@
 
 export const setEntries = (state, entries) => {
     state.entries = [...state.entries, ...entries.reverse()]
-    console.log('hola', entries)
     state.isLoading = false
 }
 

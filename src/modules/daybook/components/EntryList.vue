@@ -17,7 +17,7 @@
       </button>
     </div>
     <div class="entry-scrollarea mt-5">
-      <h2>posts récents</h2>
+      <h2>Posts récents</h2>
       <Entry
         v-for="entry in entriesByTerm"
         :key="entry.id"

@@ -7,6 +7,13 @@
         <span class="mx-2 fs-4 fw-light">{{ dayMonthYear.yearDay }}</span>
       </div>
       <div>
+        <input
+          type="file"
+          @change="onSelectedImage"
+          ref="imageSelector"
+          v-show="false"
+          accept="image/png, image/jpeg"
+        />
         <button
           v-if="entry.id"
           class="btn btn-danger mx-2"
@@ -15,7 +22,7 @@
           Supprimer
           <i class="fa fa-trash-alt"></i>
         </button>
-        <button class="btn btn-primary mx-2">
+        <button class="btn btn-primary mx-2" @click="onSelectImg">
           Upload image
           <i class="fa fa-upload"></i>
         </button>
@@ -29,7 +36,14 @@
       ></textarea>
     </div>
     <img
-      src="https://www.referenseo.com/wp-content/uploads/2019/03/image-attractive-960x540.jpg"
+      v-if="entry.picture && !localImage"
+      :src="entry.picture"
+      alt="image entry"
+      class="img-thumbnail"
+    />
+    <img
+      v-if="localImage"
+      :src="localImage"
       alt="image entry"
       class="img-thumbnail"
     />
@@ -45,6 +59,7 @@ import { defineAsyncComponent } from "vue";
 import { mapGetters, mapActions } from "vuex";
 import getDayMonthYear from "../helpers/getDayMonthYear";
 import Swal from "sweetalert2";
+import uploadImage from "../helpers/uploadImage";
 
 export default {
   props: {
@@ -61,6 +76,8 @@ export default {
   data() {
     return {
       entry: null,
+      localImage: null,
+      file: null,
     };
   },
 
@@ -105,6 +122,10 @@ export default {
       });
       Swal.showLoading(); //afficher le message
 
+      const picture = await uploadImage(this.file);
+
+      this.entry.picture = picture;
+
       //Actualiser l'post
       if (this.entry.id) {
         await this.updateEntry(this.entry); // appel updateEntry pour actualiser
@@ -114,6 +135,8 @@ export default {
         //redirection
         this.$router.push({ name: "entry", params: { id } });
       }
+
+      this.file = null;
 
       Swal.fire(
         "Post sauvegardé",
@@ -143,6 +166,23 @@ export default {
 
         Swal.fire("Post supprimé", "", "success");
       }
+    },
+
+    onSelectedImage(event) {
+      const file = event.target.files[0];
+      if (!file) {
+        this.localImage = null;
+        this.file = null;
+        return;
+      }
+      this.file = file;
+      const fileRead = new FileReader();
+      fileRead.onload = () => (this.localImage = fileRead.result);
+      fileRead.readAsDataURL(file);
+    },
+
+    onSelectImg() {
+      this.$refs.imageSelector.click(); // $refs appelle la ref de l'input
     },
   },
 
