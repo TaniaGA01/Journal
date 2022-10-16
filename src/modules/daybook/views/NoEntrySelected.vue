@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex justify-content-center align-items-center">
-    <h1 class="">Selectionner un post</h1>
+    <h1 class="">Créer un post</h1>
   </div>
   <FabComp @on:click="goCreateNewEntry">
     <i class="fa fa-2x fa-plus"></i>
