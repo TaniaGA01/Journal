@@ -6,6 +6,11 @@ import journalAPI from "@/api/journalAPI"
 export const loadEntries = async ({ commit }) => {
     const { data } = await journalAPI.get('/entries.json')
 
+    if (!data) {
+        commit('setEntries', [])
+        return
+    }
+
     const entries = []
     
     for (let id of Object.keys(data)) {// convertir data en un array d'objets
