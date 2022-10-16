@@ -1,7 +1,8 @@
 // Les mutations sont syncroniques et elles font les modifications du state
 
 export const setEntries = (state, entries) => {
-    state.entries = [...state.entries, ...entries]
+    state.entries = [...state.entries, ...entries.reverse()]
+    console.log('hola', entries)
     state.isLoading = false
 }
 
@@ -15,6 +16,5 @@ export const addEntry = (state, entry) => {
 }
 
 export const deleteEntry = (state, id) => {
-    console.log('id', id)
     state.entries = state.entries.filter( entry => entry.id !== id)
 }

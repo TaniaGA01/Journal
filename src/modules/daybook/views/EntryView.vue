@@ -44,6 +44,7 @@
 import { defineAsyncComponent } from "vue";
 import { mapGetters, mapActions } from "vuex";
 import getDayMonthYear from "../helpers/getDayMonthYear";
+import Swal from "sweetalert2";
 
 export default {
   props: {
@@ -97,27 +98,55 @@ export default {
     },
 
     async saveEntry() {
-      //Actualiser l'article
+      //popup
+      new Swal({
+        title: "Merci de patienter",
+        allowOutsideClick: false,
+      });
+      Swal.showLoading(); //afficher le message
+
+      //Actualiser l'post
       if (this.entry.id) {
         await this.updateEntry(this.entry); // appel updateEntry pour actualiser
       } else {
-        // Ajouter nouvel article
+        // Ajouter nouvel post
         const id = await this.createEntry(this.entry);
         //redirection
-        return this.$router.push({ name: "entry", params: { id } });
+        this.$router.push({ name: "entry", params: { id } });
       }
+
+      Swal.fire(
+        "Post sauvegardé",
+        "Votre post a éte bien sauvagardé",
+        "success"
+      );
     },
 
     async onDeleteEntry() {
-      console.log("delete", this.entry);
-      await this.deleteEntry(this.entry.id);
-      return this.$router.push({ name: "no-entry" });
+      //popup confirmation
+      const { isConfirmed } = await Swal.fire({
+        title: "Êtes-vous sûr de vouloir supprimer cet post ? ",
+        text: "Vous ne pourrez pas récupérer le post",
+        showDenyButton: true,
+        confirmButtonText: "Confirmer",
+      });
+
+      if (isConfirmed) {
+        new Swal({
+          title: "Merci de patienter",
+          allowOutsideClick: false,
+        });
+        Swal.showLoading();
+
+        await this.deleteEntry(this.entry.id);
+        this.$router.push({ name: "no-entry" });
+
+        Swal.fire("Post supprimé", "", "success");
+      }
     },
   },
 
   created() {
-    //console.log(`router`, this.$route); //ici on affiche l'id de la route dans la console
-    console.log(`id`, this.id); // fonctionne  uniquement à partir de la conf du props dans le router
     this.loadEntry();
   },
 

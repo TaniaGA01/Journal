@@ -4,7 +4,7 @@
       <input
         type="text"
         class="form-control"
-        placeholder="Rechercher un article"
+        placeholder="Rechercher un post"
         v-model="term"
       />
     </div>
@@ -13,11 +13,11 @@
         class="btn btn-primary"
         @click="$router.push({ name: 'entry', params: { id: 'new' } })"
       >
-        <i class="fa fa-plus-circle"></i> Nouvel article
+        <i class="fa fa-plus-circle"></i> Nouvel post
       </button>
     </div>
     <div class="entry-scrollarea mt-5">
-      <h2>Articles récents</h2>
+      <h2>posts récents</h2>
       <Entry
         v-for="entry in entriesByTerm"
         :key="entry.id"
